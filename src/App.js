@@ -1,24 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+/* Importamos ProyextoState para hacer un Wrapper que envuelva todos los
+componentes para que estos se puedan subscribir al provider de ProyectoState. 
+*/
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/auth/Login';
+import NuevaCuenta from './components/auth/NuevaCuenta';
+import Proyectos from './components/projects/Proyectos';
+import ProyectoState from './context/proyectos/ProyectoState';
+import TareaState from './context/tareas/TareaState';
+import AlertaState from './context/alertas/alertaState';
+import AuthState from './context/autenticacion/authState';
+
+import tokenAuth from './config/tokenAuth';
+import RutaPrivada from './components/rutas/RutaPrivada';
+
+//Revisar si tenemos un token
+const token = localStorage.getItem('token');
+if(token){
+  tokenAuth(token);
+}
+
+
 
 function App() {
+
+  //console.log(process.env.REACT_APP_BACKEND_URL);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ProyectoState>
+      <TareaState>
+        <AlertaState>
+          <AuthState>
+            <Router>
+              {/* <Routes>
+                <Route exact path="/" element={<Login />} />
+                <Route exact path="/nueva-cuenta" element={<NuevaCuenta />} />
+                <Route exact path="/proyectos" element={<RutaPrivada />} >
+                  <Route exact path='/proyectos' element={<Proyectos/>}/>
+                </Route>
+              </Routes> */}
+              <Routes> 
+                <Route path='/' element={<Login />} /> 
+                <Route path='/nueva-cuenta' element={<NuevaCuenta />} /> 
+                <Route element={<RutaPrivada />}> 
+                  <Route path='/proyectos' element={<Proyectos />} /> 
+                </Route> 
+              </Routes> 
+            </Router>
+          </AuthState>
+        </AlertaState>
+      </TareaState>
+    </ProyectoState>
   );
 }
 
